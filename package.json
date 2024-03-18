@@ -4,8 +4,8 @@
   "description": "",
   "main": "main.ts",
   "scripts": {
-    "start": "ts-node ./main.ts",
-    "dev": "ts-node-dev ./main.ts",
+    "start": "ts-node ./api/main.ts",
+    "dev": "ts-node-dev ./api/bot.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
