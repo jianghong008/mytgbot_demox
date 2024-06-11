@@ -8,10 +8,6 @@ export const WebApps = {
         test: 'https://t.me/mydemox_bot/test',
         prod: 'https://t.me/MomoAI_bot/app'
     },
-    TgPet:{
-        test:'https://t.me/tpdemo_bot/test',
-        prod:'https://t.me/TgPetgame_bot/app'
-    }
 }
 
 const commands = [

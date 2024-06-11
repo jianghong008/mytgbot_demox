@@ -5,7 +5,7 @@ import { WebApps } from "./config";
 export class AppCommand extends BaseCommand {
     public key = 'app'
     bot: Bot;
-    pswd = '3234'
+    pswd = '8562'
     inputs = new Map<number, { time: number, value: string }>()
     constructor(bot: Bot) {
         super()
