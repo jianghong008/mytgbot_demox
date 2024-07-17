@@ -4,9 +4,9 @@ import { BaseCommand } from "./command";
 
 export const WebApps = {
     MOMO: {
-        dev: 'https://t.me/mydemox_bot/dev',
-        test: 'https://t.me/mydemox_bot/test',
-        prod: 'https://t.me/MomoAI_bot/app'
+        dev: 'https://t.me/mydemox_bot/dev?mode=compact',
+        test: 'https://t.me/mydemox_bot/test?mode=compact',
+        prod: 'https://t.me/MomoAI_bot/app?mode=compact'
     },
 }
 
