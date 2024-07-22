@@ -68,7 +68,6 @@ export class AppCommand extends BaseCommand {
                     }
                     temp.push({
                         text: `${name}_${key}`,
-                        callback_data: `${this.key}_webapp_${webapp[key]}`,
                         web_app: {
                             url: webapp[key]
                         }
