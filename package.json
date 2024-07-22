@@ -5,6 +5,7 @@
   "main": "main.ts",
   "scripts": {
     "start": "ts-node ./api/bot.ts",
+    "hook":"ts-node ./scripts/hook.ts",
     "dev": "ts-node-dev ./api/main.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

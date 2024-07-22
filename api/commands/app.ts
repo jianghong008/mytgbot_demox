@@ -36,6 +36,9 @@ export class AppCommand extends BaseCommand {
         })
     }
     async callback(ctx: CallbackQueryContext<Context>, data: string) {
+        if (!data) {
+            return
+        }
         ctx.answerCallbackQuery();
         const reg = new RegExp(`^webapp_`)
         if (reg.test(data)) {
@@ -66,12 +69,17 @@ export class AppCommand extends BaseCommand {
                     if (index % 3 == 0) {
                         temp = []
                     }
-                    temp.push({
-                        text: `${name}_${key}`,
-                        web_app: {
+                    if(/^https:\/\/t\.me/.test(webapp[key])){
+                        temp.push({
+                            text: `${name}_${key}`,
                             url: webapp[key]
-                        }
-                    },)
+                        },)
+                    }else{
+                        temp.push({
+                            text: `${name}_${key}`,
+                            url: webapp[key]
+                        },)
+                    }
                     index++
                 }
                 btnCont.push(temp)
