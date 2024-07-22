@@ -55,7 +55,7 @@ export class AppCommand extends BaseCommand {
             this.inputs.delete(uid)
             const cont = `dev/test app`
             let index = 0
-            const btnCont:any[] = []
+            const btnCont: any[] = []
             let temp = []
             for (const name in WebApps) {
                 const webapp = Reflect.get(WebApps, name)
@@ -69,17 +69,19 @@ export class AppCommand extends BaseCommand {
                     temp.push({
                         text: `${name}_${key}`,
                         callback_data: `${this.key}_webapp_${webapp[key]}`,
-                        url: webapp[key]
+                        web_app: {
+                            url: webapp[key]
+                        }
                     },)
                     index++
                 }
                 btnCont.push(temp)
             }
-            
+
             ctx.editMessageText(cont, {
                 parse_mode: 'HTML',
                 reply_markup: {
-                    inline_keyboard:btnCont
+                    inline_keyboard: btnCont
                 }
             })
         } else if (input.value.length === 3) {
