@@ -65,7 +65,7 @@ Remaining time :${this.game.duration}s
             ctx.editMessageText('game over').catch(console.log)
             return
         }
-        const curName = ctx.from.first_name + ' ' + ctx.from.last_name
+        const curName = ctx.from.first_name + ' ' + (ctx.from?.last_name ?? '')
         if (this.data.has(ctx.from.id)) {
             console.log(`already joined @(${curName})`)
             ctx.reply(`already joined @[${curName}](tg://user?id=${ctx.from.id})`, {
@@ -89,7 +89,7 @@ Remaining time :${this.game.duration}s
             name: curName
         })
         if (this.data.size < 2) {
-            const dt = Math.round(Date.now()-this.game.time)
+            const dt = Math.round(Date.now() - this.game.time)
             ctx.editMessageText(`
                 *rock-paper-scissors game*
     _Click the button below to participate in the game_
@@ -120,7 +120,7 @@ Remaining time :${this.game.duration}s
                 if ((user.value == 'rock' && value.value == 'scissors') || (user.value == 'paper' && value.value == 'rock') || (user.value == 'scissors' && value.value == 'paper')) {
                     user.winner = user.uid
                     user.winnerName = user.name
-                }else if(user.value == value.value){
+                } else if (user.value == value.value) {
                     user.winner = 0
                 } else {
                     user.winner = uid
@@ -131,7 +131,7 @@ Remaining time :${this.game.duration}s
 
         ctx.editMessageText('game over').catch(console.log);
         let winMsg = `congratulations, @[${curName}](tg://user?id=${ctx.from.id}) is the winner! 🎉 `
-        if(user.winner == 0){
+        if (user.winner == 0) {
             winMsg = `it's a tie! 🤝 `
         }
         ctx.reply(winMsg, {
