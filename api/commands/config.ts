@@ -1,6 +1,7 @@
 import { Bot, CallbackQueryContext, Context } from "grammy";
 import { AppCommand } from "./app";
 import { BaseCommand } from "./command";
+import { RpsGameCommand } from "./rps-game";
 
 export const WebApps = {
     MOMO: {
@@ -11,7 +12,8 @@ export const WebApps = {
 }
 
 const commands = [
-    AppCommand
+    AppCommand,
+    RpsGameCommand,
 ]
 const coms: BaseCommand[] = []
 export const initCommand = (bot: Bot) => {
@@ -19,10 +21,18 @@ export const initCommand = (bot: Bot) => {
         const com = Reflect.get(commands, key)
         if (com) {
             const c = new com(bot)
-            bot.command(c.key, c.message.bind(c))
+            bot.command(c.key, c.setup.bind(c))
             coms.push(c)
         }
     }
+
+    // bot.on('message',ctx=>{
+    //     coms.forEach((com) => {
+    //         com.message(ctx)
+    //     })
+        
+    // })
+    
 }
 
 export const initCallback = (ctx: CallbackQueryContext<Context>) => {

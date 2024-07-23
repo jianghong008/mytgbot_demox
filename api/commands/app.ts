@@ -7,11 +7,17 @@ export class AppCommand extends BaseCommand {
     bot: Bot;
     pswd = '8562'
     inputs = new Map<number, { time: number, value: string }>()
+    mid = 0
     constructor(bot: Bot) {
         super()
         this.bot = bot;
     }
-    message(ctx: CommandContext<Context>) {
+    async setup(ctx: CommandContext<Context>) {
+        super.setup(ctx)
+        if(this.mid>0){
+            ctx.api.deleteMessages(ctx.chat!.id, [this.mid]).catch(console.log)
+        }
+        this.inputs.clear()
         const bts = []
         for (let i = 0; i < 3; i++) {
             const ar = []
@@ -27,27 +33,39 @@ export class AppCommand extends BaseCommand {
         const uid = ctx.from?.id
 
         uid && this.inputs.set(uid, { time: Date.now(), value: '' })
-        ctx.reply('input code', {
+        const msg = await ctx.reply('input code', {
             reply_markup: {
                 inline_keyboard: bts,
                 remove_keyboard: true
             },
             parse_mode: 'HTML',
-        })
+        }).catch(console.log)
+        if(msg){
+            this.mid = msg.message_id
+        }
     }
     async callback(ctx: CallbackQueryContext<Context>, data: string) {
         if (!data) {
             return
         }
         ctx.answerCallbackQuery();
-        const reg = new RegExp(`^webapp_`)
-        if (reg.test(data)) {
-            this.openWebApp(ctx, data.replace(reg, ''))
-            return
-        }
-        const uid = ctx.from?.id
+        const uid = ctx.from.id
         const input = this.inputs.get(uid)
         if (input === undefined) {
+            this.inputs.delete(uid)
+            const cont = `invalid input`
+            ctx.editMessageText(cont, {
+                parse_mode: 'HTML'
+            })
+            return
+        }
+        if (input.time + 1000 * 30 < Date.now()) {
+            this.inputs.delete(uid)
+            const cont = `time out`
+            ctx.editMessageText(cont, {
+                parse_mode: 'HTML'
+            })
+            console.log('time out')
             return
         }
         this.inputs.set(uid, {
@@ -69,12 +87,12 @@ export class AppCommand extends BaseCommand {
                     if (index % 3 == 0) {
                         temp = []
                     }
-                    if(/^https:\/\/t\.me/.test(webapp[key])){
+                    if (/^https:\/\/t\.me/.test(webapp[key])) {
                         temp.push({
                             text: `${name}_${key}`,
                             url: webapp[key]
                         },)
-                    }else{
+                    } else {
                         temp.push({
                             text: `${name}_${key}`,
                             url: webapp[key]
@@ -98,8 +116,5 @@ export class AppCommand extends BaseCommand {
                 parse_mode: 'HTML'
             })
         }
-    }
-    openWebApp(ctx: CallbackQueryContext<Context>, url: string) {
-        console.log(url)
     }
 }
