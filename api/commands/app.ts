@@ -48,7 +48,7 @@ export class AppCommand extends BaseCommand {
         if (!data) {
             return
         }
-        ctx.answerCallbackQuery();
+        ctx.answerCallbackQuery().catch(console.log);
         const uid = ctx.from.id
         const input = this.inputs.get(uid)
         if (input === undefined) {
@@ -56,7 +56,7 @@ export class AppCommand extends BaseCommand {
             const cont = `invalid input`
             ctx.editMessageText(cont, {
                 parse_mode: 'HTML'
-            })
+            }).catch(console.log)
             return
         }
         if (input.time + 1000 * 30 < Date.now()) {
@@ -64,7 +64,7 @@ export class AppCommand extends BaseCommand {
             const cont = `time out`
             ctx.editMessageText(cont, {
                 parse_mode: 'HTML'
-            })
+            }).catch(console.log)
             console.log('time out')
             return
         }
@@ -108,13 +108,13 @@ export class AppCommand extends BaseCommand {
                 reply_markup: {
                     inline_keyboard: btnCont
                 }
-            })
+            }).catch(console.log)
         } else if (input.value.length === 3) {
             this.inputs.delete(uid)
             const cont = `code error`
             ctx.editMessageText(cont, {
                 parse_mode: 'HTML'
-            })
+            }).catch(console.log)
         }
     }
 }

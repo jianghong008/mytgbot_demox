@@ -10,6 +10,7 @@ export class RpsGameCommand extends BaseCommand {
         isStart: false,
         time: 0,
         mid: 0,
+        duration: 60 * 15
     }
     constructor(bot: Bot) {
         super()
@@ -28,6 +29,7 @@ export class RpsGameCommand extends BaseCommand {
             *rock-paper-scissors game*
 _Click the button below to participate in the game_
 ${this.data.size}/2 players joined
+Remaining time :${this.game.duration}s
             `, {
             parse_mode: 'Markdown',
             reply_markup: {
@@ -58,7 +60,7 @@ ${this.data.size}/2 players joined
     }
     async callback(ctx: CallbackQueryContext<Context>, data: string) {
         ctx.answerCallbackQuery().catch(console.log);
-        if (this.game.time + 1000 * 60 < Date.now()) {
+        if (this.game.time + 1000 * this.game.duration < Date.now()) {
             this.game.isStart = false
             ctx.editMessageText('game over').catch(console.log)
             return
@@ -87,10 +89,12 @@ ${this.data.size}/2 players joined
             name: curName
         })
         if (this.data.size < 2) {
+            const dt = Math.round(Date.now()-this.game.time)
             ctx.editMessageText(`
                 *rock-paper-scissors game*
     _Click the button below to participate in the game_
     ${this.data.size}/2 players joined
+    Remaining time :${dt}s
                 `, {
                 parse_mode: 'Markdown',
                 reply_markup: {
@@ -116,6 +120,8 @@ ${this.data.size}/2 players joined
                 if ((user.value == 'rock' && value.value == 'scissors') || (user.value == 'paper' && value.value == 'rock') || (user.value == 'scissors' && value.value == 'paper')) {
                     user.winner = user.uid
                     user.winnerName = user.name
+                }else if(user.value == value.value){
+                    user.winner = 0
                 } else {
                     user.winner = uid
                     user.winnerName = value.name
@@ -124,7 +130,11 @@ ${this.data.size}/2 players joined
         })
 
         ctx.editMessageText('game over').catch(console.log);
-        ctx.reply(`congratulations, @[${curName}](tg://user?id=${ctx.from.id}) is the winner! 🎉 `, {
+        let winMsg = `congratulations, @[${curName}](tg://user?id=${ctx.from.id}) is the winner! 🎉 `
+        if(user.winner == 0){
+            winMsg = `it's a tie! 🤝 `
+        }
+        ctx.reply(winMsg, {
             parse_mode: 'Markdown'
         }).catch(console.log);
     }
