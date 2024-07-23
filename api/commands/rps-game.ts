@@ -58,24 +58,29 @@ ${this.data.size}/2 players joined
     }
     async callback(ctx: CallbackQueryContext<Context>, data: string) {
         ctx.answerCallbackQuery().catch(console.log);
+        if (this.game.time + 1000 * 60 < Date.now()) {
+            this.game.isStart = false
+            ctx.editMessageText('game over').catch(console.log)
+            return
+        }
         const curName = ctx.from.first_name + ' ' + ctx.from.last_name
         if (this.data.has(ctx.from.id)) {
             console.log(`already joined @(${curName})`)
-            ctx.reply(`already joined @[${curName}](tg://user?id=${ctx.from.id})`,{
+            ctx.reply(`already joined @[${curName}](tg://user?id=${ctx.from.id})`, {
                 parse_mode: 'Markdown'
             })
-            .catch(console.log);
+                .catch(console.log);
             return
         }
         if (this.data.size >= 2) {
             console.log(`Waiting for the game to end @(${curName})`)
-            ctx.reply(`Waiting for the game to end @[${curName}](tg://user?id=${ctx.from.id})`,{
+            ctx.reply(`Waiting for the game to end @[${curName}](tg://user?id=${ctx.from.id})`, {
                 parse_mode: 'Markdown'
             })
-            .catch(console.log);
+                .catch(console.log);
             return
         }
-        
+
         this.data.set(ctx.from.id, {
             time: Date.now(),
             value: data,
