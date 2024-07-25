@@ -4,11 +4,15 @@ import { BaseCommand } from "./command";
 import { RpsGameCommand } from "./rps-game";
 
 export const WebApps = {
-    MOMO: {
+    momoMini: {
         dev: 'https://t.me/mydemox_bot/dev?mode=compact',
-        test: 'https://test-mini.momo.meme/',
+        test: 'https://t.me/mydemox_bot/test?mode=compact',
         prod: 'https://t.me/MomoAI_bot/app?mode=compact'
     },
+    momoWeb:{
+        momoai:'https://www.momoai.io/',
+        momo:'https://www.momo.meme/'
+    }
 }
 
 const commands = [
