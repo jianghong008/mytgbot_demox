@@ -6,7 +6,7 @@ import { RpsGameCommand } from "./rps-game";
 export const WebApps = {
     MOMO: {
         dev: 'https://t.me/mydemox_bot/dev?mode=compact',
-        test: 'https://t.me/mydemox_bot/test?mode=compact',
+        test: 'https://test-mini.momo.meme/',
         prod: 'https://t.me/MomoAI_bot/app?mode=compact'
     },
 }

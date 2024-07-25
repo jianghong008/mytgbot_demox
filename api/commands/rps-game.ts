@@ -59,7 +59,7 @@ Remaining time :${this.game.duration}s
         return bts
     }
     async callback(ctx: CallbackQueryContext<Context>, data: string) {
-        ctx.answerCallbackQuery().catch(console.log);
+        
         if (this.game.time + 1000 * this.game.duration < Date.now()) {
             this.game.isStart = false
             ctx.editMessageText('game over').catch(console.log)

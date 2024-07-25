@@ -1,6 +1,7 @@
 import { Bot, CallbackQueryContext, CommandContext, Context, InlineKeyboard } from "grammy";
 import { BaseCommand } from "./command";
 import { WebApps } from "./config";
+import { InlineKeyboardButton } from "@grammyjs/types";
 
 export class AppCommand extends BaseCommand {
     public key = 'app'
@@ -48,13 +49,13 @@ export class AppCommand extends BaseCommand {
         if (!data) {
             return
         }
-        ctx.answerCallbackQuery().catch(console.log);
+        
         const uid = ctx.from.id
         const input = this.inputs.get(uid)
         if (input === undefined) {
             this.inputs.delete(uid)
-            const cont = `invalid input`
-            ctx.editMessageText(cont, {
+            const cont = `not allow`
+            ctx.reply(cont, {
                 parse_mode: 'HTML'
             }).catch(console.log)
             return
@@ -76,8 +77,8 @@ export class AppCommand extends BaseCommand {
             this.inputs.delete(uid)
             const cont = `dev/test app`
             let index = 0
-            const btnCont: any[] = []
-            let temp = []
+            const btnCont: InlineKeyboardButton[][] = []
+            let temp:InlineKeyboardButton[] = []
             for (const name in WebApps) {
                 const webapp = Reflect.get(WebApps, name)
                 if (!webapp) {
@@ -95,7 +96,9 @@ export class AppCommand extends BaseCommand {
                     } else {
                         temp.push({
                             text: `${name}_${key}`,
-                            url: webapp[key]
+                            web_app: {
+                                url: webapp[key]
+                            }
                         },)
                     }
                     index++
