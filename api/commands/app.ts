@@ -9,13 +9,18 @@ export class AppCommand extends BaseCommand {
     pswd = '8562'
     inputs = new Map<number, { time: number, value: string }>()
     mid = 0
+    state = {
+        time: 0,
+        errCount: 0,
+        maxErr: 4
+    }
     constructor(bot: Bot) {
         super()
         this.bot = bot;
     }
     async setup(ctx: CommandContext<Context>) {
         super.setup(ctx)
-        if(this.mid>0){
+        if (this.mid > 0) {
             ctx.api.deleteMessages(ctx.chat!.id, [this.mid]).catch(console.log)
         }
         this.inputs.clear()
@@ -34,14 +39,13 @@ export class AppCommand extends BaseCommand {
         const uid = ctx.from?.id
 
         uid && this.inputs.set(uid, { time: Date.now(), value: '' })
-        const msg = await ctx.reply('input code', {
+        const msg = await ctx.reply('*input code*', {
             reply_markup: {
                 inline_keyboard: bts,
-                remove_keyboard: true
             },
-            parse_mode: 'HTML',
+            parse_mode: 'Markdown',
         }).catch(console.log)
-        if(msg){
+        if (msg) {
             this.mid = msg.message_id
         }
     }
@@ -49,36 +53,46 @@ export class AppCommand extends BaseCommand {
         if (!data) {
             return
         }
-        
+        if(this.inputs.size==0){
+            const cont = '_invalid input_'
+            ctx.editMessageText(cont, {
+                parse_mode: 'Markdown'
+            }).catch(console.log)
+            console.log('invalid input')
+            return
+        }
         const uid = ctx.from.id
         const input = this.inputs.get(uid)
         if (input === undefined) {
-            this.inputs.delete(uid)
-            const cont = `not allow`
+            const cont = `_not allow_`
             ctx.reply(cont, {
-                parse_mode: 'HTML'
+                parse_mode: 'Markdown'
             }).catch(console.log)
             return
         }
+
         if (input.time + 1000 * 30 < Date.now()) {
             this.inputs.delete(uid)
-            const cont = `time out`
+            const cont = `_time out_`
             ctx.editMessageText(cont, {
-                parse_mode: 'HTML'
+                parse_mode: 'Markdown'
             }).catch(console.log)
             console.log('time out')
             return
         }
-        this.inputs.set(uid, {
-            time: Date.now(),
-            value: input.value + data
-        })
-        if (input.value + data === this.pswd) {
-            this.inputs.delete(uid)
-            const cont = `dev/test app`
+
+        if (input.value.length < 3) {
+            this.inputs.set(uid, {
+                time: Date.now(),
+                value: input.value + data
+            })
+        } else if (input.value + data === this.pswd) {
+            console.log('ok')
+            const curEnv = ctx.chat ? ctx.chat?.type : ''
+            const cont = `env【*${curEnv}*】 dev/test app`
             let index = 0
             const btnCont: InlineKeyboardButton[][] = []
-            let temp:InlineKeyboardButton[] = []
+            let temp: InlineKeyboardButton[] = []
             for (const name in WebApps) {
                 const webapp = Reflect.get(WebApps, name)
                 if (!webapp) {
@@ -93,12 +107,17 @@ export class AppCommand extends BaseCommand {
                             text: `${name}_${key}`,
                             url: webapp[key]
                         },)
-                    } else {
+                    } else if (ctx.chat?.type === 'private') {
                         temp.push({
                             text: `${name}_${key}`,
                             web_app: {
                                 url: webapp[key]
                             }
+                        },)
+                    } else {
+                        temp.push({
+                            text: `${name}_${key}`,
+                            url: webapp[key]
                         },)
                     }
                     index++
@@ -107,14 +126,17 @@ export class AppCommand extends BaseCommand {
             }
 
             ctx.editMessageText(cont, {
-                parse_mode: 'HTML',
+                parse_mode: 'Markdown',
                 reply_markup: {
                     inline_keyboard: btnCont
                 }
+            }).then(() => {
+                this.inputs.delete(uid)
             }).catch(console.log)
         } else if (input.value.length === 3) {
+            this.state.errCount++
             this.inputs.delete(uid)
-            const cont = `code error`
+            const cont = `_code error_`
             ctx.editMessageText(cont, {
                 parse_mode: 'HTML'
             }).catch(console.log)
