@@ -138,7 +138,7 @@ export class AppCommand extends BaseCommand {
             this.inputs.delete(uid)
             const cont = `_code error_`
             ctx.editMessageText(cont, {
-                parse_mode: 'HTML'
+                parse_mode: 'Markdown'
             }).catch(console.log)
         }
     }
