@@ -14,7 +14,7 @@ export const WebApps = {
         momo: 'https://www.momo.meme/'
     },
     momoSdk: {
-        demo: 'https://t.me/mmsdk_test_bot/mmsdk'
+        dev: 'https://t.me/mmsdk_test_bot/mmsdk'
     }
 }
 

@@ -25,12 +25,13 @@ export class AppCommand extends BaseCommand {
         }
         this.inputs.clear()
         const bts = []
+        const icons:string[] = ['🍏','🍎','🍐','🍊','🍋','🍌','🍉','🍇','🍓']
         for (let i = 0; i < 3; i++) {
             const ar = []
             for (let u = 0; u < 3; u++) {
                 const btnId = i * 3 + u + 1
                 ar.push({
-                    text: '⁕',
+                    text: `${icons[i * 3 + u]}`,
                     callback_data: this.key + "_" + btnId
                 })
             }
@@ -39,7 +40,7 @@ export class AppCommand extends BaseCommand {
         const uid = ctx.from?.id
 
         uid && this.inputs.set(uid, { time: Date.now(), value: '' })
-        const msg = await ctx.reply('*input code*', {
+        const msg = await ctx.reply('😀 *You know I love those fruits?* 👇', {
             reply_markup: {
                 inline_keyboard: bts,
             },
@@ -49,12 +50,26 @@ export class AppCommand extends BaseCommand {
             this.mid = msg.message_id
         }
     }
+    private getChatEnvIcon(env?: string) {
+        switch (env) {
+            case 'group':
+                return '👥'
+            case 'supergroup':
+                return '👥'
+            case 'private':
+                return '🤡'
+            case 'channel':
+                return '🔊'
+            default:
+                return '👽'
+        }
+    }
     async callback(ctx: CallbackQueryContext<Context>, data: string) {
         if (!data) {
             return
         }
-        if(this.inputs.size==0){
-            const cont = '_invalid input_'
+        if (this.inputs.size == 0) {
+            const cont = '👻 _invalid input_ 👻'
             ctx.editMessageText(cont, {
                 parse_mode: 'Markdown'
             }).catch(console.log)
@@ -64,7 +79,7 @@ export class AppCommand extends BaseCommand {
         const uid = ctx.from.id
         const input = this.inputs.get(uid)
         if (input === undefined) {
-            const cont = `_not allow_`
+            const cont = `😱 _not allow_ 😡`
             ctx.reply(cont, {
                 parse_mode: 'Markdown'
             }).catch(console.log)
@@ -73,7 +88,7 @@ export class AppCommand extends BaseCommand {
 
         if (input.time + 1000 * 30 < Date.now()) {
             this.inputs.delete(uid)
-            const cont = `_time out_`
+            const cont = `🕰 _time out_ 🕰`
             ctx.editMessageText(cont, {
                 parse_mode: 'Markdown'
             }).catch(console.log)
@@ -88,44 +103,46 @@ export class AppCommand extends BaseCommand {
             })
         } else if (input.value + data === this.pswd) {
             console.log('ok')
-            const curEnv = ctx.chat ? ctx.chat?.type : ''
-            const cont = `env【*${curEnv}*】 dev/test app`
+            const curEnv = this.getChatEnvIcon(ctx.chat?.type)
+            const lines: string[] = [`env【*${curEnv}*】 dev/test app\n`]
             let index = 0
             const btnCont: InlineKeyboardButton[][] = []
-            let temp: InlineKeyboardButton[] = []
+            let line = 0
             for (const name in WebApps) {
                 const webapp = Reflect.get(WebApps, name)
                 if (!webapp) {
                     continue
                 }
+                const temp: InlineKeyboardButton[] = []
+                lines.push(`*${line + 1}*. 👉 ${name}`)
                 for (const key in webapp) {
-                    if (index % 3 == 0) {
-                        temp = []
-                    }
+
                     if (/^https:\/\/t\.me/.test(webapp[key])) {
                         temp.push({
-                            text: `${name}_${key}`,
+                            text: `⏺ ${line + 1}. ${key}`,
                             url: webapp[key]
                         },)
                     } else if (ctx.chat?.type === 'private') {
                         temp.push({
-                            text: `${name}_${key}`,
+                            text: `⏺ ${line + 1}. ${key}`,
                             web_app: {
                                 url: webapp[key]
                             }
                         },)
                     } else {
                         temp.push({
-                            text: `${name}_${key}`,
+                            text: `⏺ ${line + 1}. ${key}`,
                             url: webapp[key]
                         },)
                     }
                     index++
                 }
                 btnCont.push(temp)
+
+                line++
             }
 
-            ctx.editMessageText(cont, {
+            ctx.editMessageText(lines.join('\n'), {
                 parse_mode: 'Markdown',
                 reply_markup: {
                     inline_keyboard: btnCont
@@ -136,7 +153,7 @@ export class AppCommand extends BaseCommand {
         } else if (input.value.length === 3) {
             this.state.errCount++
             this.inputs.delete(uid)
-            const cont = `_code error_`
+            const cont = `😭 _No, I don't like them!_`
             ctx.editMessageText(cont, {
                 parse_mode: 'Markdown'
             }).catch(console.log)
