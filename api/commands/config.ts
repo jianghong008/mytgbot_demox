@@ -9,9 +9,12 @@ export const WebApps = {
         test: 'https://t.me/mydemox_bot/test?mode=compact',
         prod: 'https://t.me/MomoAI_bot/app?mode=compact'
     },
-    momoWeb:{
-        momoai:'https://www.momoai.io/',
-        momo:'https://www.momo.meme/'
+    momoWeb: {
+        momoai: 'https://www.momoai.io/',
+        momo: 'https://www.momo.meme/'
+    },
+    momoSdk: {
+        demo: 'https://t.me/mmsdk_test_bot/mmsdk'
     }
 }
 
@@ -34,9 +37,9 @@ export const initCommand = (bot: Bot) => {
     //     coms.forEach((com) => {
     //         com.message(ctx)
     //     })
-        
+
     // })
-    
+
 }
 
 export const initCallback = (ctx: CallbackQueryContext<Context>) => {
