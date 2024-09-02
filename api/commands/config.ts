@@ -15,6 +15,10 @@ export const WebApps = {
     },
     momoSdk: {
         dev: 'https://t.me/mmsdk_test_bot/mmsdk'
+    },
+    tflag: {
+        test: 'https://t.me/FlagDev_bot/DevTFlag',
+        prod: 'https://t.me/Tflagbot/app'
     }
 }
 
