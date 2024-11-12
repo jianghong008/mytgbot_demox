@@ -19,6 +19,10 @@ export const WebApps = {
     tflag: {
         test: 'https://t.me/FlagDev_bot/DevTFlag',
         prod: 'https://t.me/Tflagbot/app'
+    },
+    momox: {
+        test: 'https://t.me/momox_test_bot/test',
+        prod: 'https://t.me/momox_momobot/app'
     }
 }
 
