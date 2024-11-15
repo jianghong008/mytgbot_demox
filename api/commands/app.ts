@@ -1,4 +1,4 @@
-import { Bot, CallbackQueryContext, CommandContext, Context, InlineKeyboard } from "grammy";
+import { Bot, CallbackQueryContext, CommandContext, Context } from "grammy";
 import { BaseCommand } from "./command";
 import { WebApps } from "./config";
 import { InlineKeyboardButton } from "@grammyjs/types";
@@ -21,7 +21,7 @@ export class AppCommand extends BaseCommand {
     async setup(ctx: CommandContext<Context>) {
         super.setup(ctx)
         if (this.mid > 0) {
-            ctx.api.deleteMessages(ctx.chat!.id, [this.mid]).catch(console.log)
+            ctx.api?.deleteMessages(ctx.chat!.id, [this.mid]).catch(console.log)
         }
         this.inputs.clear()
         const bts = []

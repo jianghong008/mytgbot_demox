@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "grammy": "^1.11.2"
+    "grammy": "^1.31.3"
   },
   "devDependencies": {
     "@grammyjs/types": "^3.3.0",
